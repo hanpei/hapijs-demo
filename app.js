@@ -18,14 +18,12 @@ const pluginHapiPino = require('./plugins/hapi-pino');
 const server = Hapi.server({ port: config.PORT, host: config.HOST });
 const init = async () => {
   server.realm.modifiers.route.prefix = config.API_PREFIX;
-  await server.register(
-    [
-      ...pluginHapiSwagger,
-      hapiAuthJWT2,
-      pluginPagination,
-      // pluginHapiPino,
-    ],
-  );
+  await server.register([
+    ...pluginHapiSwagger,
+    hapiAuthJWT2,
+    pluginPagination,
+    // pluginHapiPino,
+  ]);
 
   pluginHapiAuthJWT2(server);
 
@@ -37,7 +35,7 @@ const init = async () => {
   ]);
 
   await server.start();
-  console.log(`server running at: ${server.info.uri}`);
+  console.log(`server running at: ${server.info.uri}${config.API_PREFIX}/documentation`); // http://127.0.0.1:3000/api/v0/documentation#!/tests/get
 };
 
 init();
