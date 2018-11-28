@@ -167,10 +167,10 @@ module.exports = [
   },
   {
     method: 'POST',
-    path: `${GROUP_NAME}/pay/notify`,
-    handler: (request, h) => {
+    path: `/${GROUP_NAME}/pay/notify`,
+    handler: async (request, h) => {
       const result = await xml2jsParseString(request.payload).then(
-        parsedResult => {
+        async parsedResult => {
           if (parsedResult.xml.return_code[0] === 'SUCCESS') {
             // 微信统一支付状态成功，需要检验本地数据的逻辑一致性
             // 省略...细节逻辑校验
@@ -201,6 +201,9 @@ module.exports = [
       tags: ['api', GROUP_NAME],
       description: '微信支付成功的消息推送',
       auth: false,
+      validate: {
+        payload: Joi.string().required()
+      }
     },
   },
   {
