@@ -1,12 +1,6 @@
 const config = require('../config');
 
 const validate = async (decoded, request) => {
-  console.log(' - - - - - - - decoded token:');
-  console.log(decoded);
-  console.log(' - - - - - - - request info:');
-  console.log(request.info);
-  console.log(' - - - - - - - user agent:');
-  console.log(request.headers['user-agent']);
 
   let error;
 

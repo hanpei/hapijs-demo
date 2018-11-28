@@ -66,7 +66,11 @@ const options = {
     paginate: 'paginate',
   },
   routes: {
-    include: [`${API_PREFIX}/shops`, `${API_PREFIX}/shops/{shopId}/goods`],
+    include: [
+      `${API_PREFIX}/shops`,
+      `${API_PREFIX}/shops/{shopId}/goods`,
+      `${API_PREFIX}/orders`,
+    ],
     exclude: [],
   },
 };
