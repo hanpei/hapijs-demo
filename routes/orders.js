@@ -169,30 +169,33 @@ module.exports = [
     method: 'POST',
     path: `${GROUP_NAME}/pay/notify`,
     handler: (request, h) => {
-      xml2js.parseString(request.payload, async (err, parsedResult) => {
-        if (parsedResult.xml.return_code[0] === 'SUCCESS') {
-          // 微信统一支付状态成功，需要检验本地数据的逻辑一致性
-          // 省略...细节逻辑校验
-          // 更新该订单编号下的支付状态未已支付
-          const orderId = parsedResult.xml.out_trade_no[0];
-          const orderResult = await models.orders.findOne({
-            where: { id: orderId },
-          });
+      const result = await xml2jsParseString(request.payload).then(
+        parsedResult => {
+          if (parsedResult.xml.return_code[0] === 'SUCCESS') {
+            // 微信统一支付状态成功，需要检验本地数据的逻辑一致性
+            // 省略...细节逻辑校验
+            // 更新该订单编号下的支付状态未已支付
+            const orderId = parsedResult.xml.out_trade_no[0];
+            const orderResult = await models.orders.findOne({
+              where: { id: orderId },
+            });
 
-          orderResult.payment_status = '1';
-          await orderResult.save();
+            orderResult.payment_status = '1';
+            await orderResult.save();
 
-          const retVal = {
-            return_code: 'SUCCESS',
-            return_msg: 'OK',
-          };
-          const builder = new xml2js.Builder({
-            rootName: 'xml',
-            headless: true,
-          });
-          return builder.buildObject(retVal);
+            const retVal = {
+              return_code: 'SUCCESS',
+              return_msg: 'OK',
+            };
+            const builder = new xml2js.Builder({
+              rootName: 'xml',
+              headless: true,
+            });
+            return builder.buildObject(retVal);
+          }
         }
-      });
+      );
+      return result;
     },
     config: {
       tags: ['api', GROUP_NAME],
